@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAYAN - Kitchen | Cafe & Grill</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: #000; color: #fff; min-height: 100vh; padding: 15px; font-size: 15px; }
+  header { text-align: center; padding: 20px 10px; border-bottom: 2px solid #FFD700; margin-bottom: 20px; }
+  .logo { font-size: 38px; font-weight: 900; color: #FFD700; letter-spacing: 6px; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+  .tagline { font-size: 14px; color: #fff; letter-spacing: 3px; margin-top: 5px; font-weight: 600; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+  .tab-btn { background: #111; color: #FFD700; border: 1px solid #FFD700; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+  .tab-btn.active { background: #FFD700; color: #000; }
+  .date-box { text-align: center; margin-bottom: 20px; }
+  .date-box label { color: #FFD700; font-weight: bold; margin-right: 8px; }
+  .date-box input { background: #111; color: #fff; border: 1px solid #FFD700; padding: 8px 12px; border-radius: 6px; font-size: 14px; }
+  .card { background: #0d0d0d; border: 1px solid #FFD700; border-radius: 10px; padding: 15px; margin-bottom: 18px; box-shadow: 0 0 10px rgba(255,215,0,0.15); }
+  .card h2 { color: #FFD700; font-size: 18px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 6px; }
+  .input-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .input-row input { flex: 1; min-width: 100px; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 6px; font-size: 14px; }
+  .input-row input:focus { outline: none; border-color: #FFD700; }
+  button { background: #FFD700; color: #000; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
+  button:hover { background: #fff; }
+  button.delete { background: #ff3b3b; color: #fff; padding: 4px 10px; font-size: 12px; }
+  ul { list-style: none; margin-top: 12px; }
+  ul li { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: #141414; border-left: 3px solid #FFD700; border-radius: 5px; margin-bottom: 6px; font-size: 14px; }
+  .item-price { color: #FFD700; font-weight: bold; }
+  .summary { background: #0d0d0d; border: 2px solid #FFD700; border-radius: 10px; padding: 18px; margin-top: 20px; }
+  .summary h2 { color: #FFD700; text-align: center; margin-bottom: 15px; font-size: 20px; }
+  .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 15px; border-bottom: 1px dashed #222; }
+  .summary-row .value { color: #FFD700; font-weight: bold; }
+  .summary-row.total { border-top: 2px solid #FFD700; margin-top: 8px; padding-top: 12px; font-size: 18px; }
+  .profit { color: #00ff88 !important; }
+  .loss { color: #ff3b3b !important; }
+  .history-item { background: #141414; border-left: 3px solid #FFD700; border-radius: 6px; padding: 10px; margin-bottom: 8px; font-size: 13px; }
+  .history-item .h-date { color: #FFD700; font-weight: bold; margin-bottom: 4px; }
+  .hidden { display: none; }
+  footer { text-align: center; color: #666; font-size: 12px; margin-top: 25px; padding: 15px 0; border-top: 1px solid #222; }
+  footer span { color: #FFD700; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ZAYAN</div>
+  <div class="tagline">Kitchen | Cafe &amp; Grill</div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('daily', event)">Daily Hisab</button>
+  <button class="tab-btn" onclick="switchTab('monthly', event)">Monthly Hisab</button>
+  <button class="tab-btn" onclick="switchTab('history', event)">History</button>
+</div>
+
+<div id="dailyTab">
+  <div class="date-box">
+    <label for="dateInput">Date:</label>
+    <input type="date" id="dateInput" onchange="loadDay()">
+  </div>
+
+  <div class="card">
+    <h2>🛒 Bazar / Raw Materials</h2>
+    <div class="input-row">
+      <input type="text" id="bazarName" placeholder="Item name (Chicken, Oil...)">
+      <input type="number" id="bazarPrice" placeholder="Price (৳)" step="0.01">
+      <button onclick="addBazar()">Add Bazar</button>
+    </div>
+    <ul id="bazarList"></ul>
+  </div>
+
+  <div class="card">
+    <h2>👨‍🍳 Staff Salary</h2>
+    <div class="input-row">
+      <input type="text" id="staffName" placeholder="Staff name">
+      <input type="number" id="staffSalary" placeholder="Salary (৳)" step="0.01">
+      <button onclick="addStaff()">Add Salary</button>
+    </div>
+    <ul id="staffList"></ul>
+  </div>
+
+  <div class="card">
+    <h2>💰 Daily Sales</h2>
+    <div class="input-row">
+      <input type="number" id="salesAmount" placeholder="Sales amount (৳)" step="0.01">
+      <button onclick="addSales()">Add Sales</button>
+    </div>
+    <ul id="salesList"></ul>
+  </div>
+
+  <div class="summary">
+    <h2>📊 Daily Summary</h2>
+    <div class="summary-row"><span>Total Sales</span><span class="value" id="totalSales">৳ 0.00</span></div>
+    <div class="summary-row"><span>Total Bazar</span><span class="value" id="totalBazar">৳ 0.00</span></div>
+    <div class="summary-row"><span>Total Staff</span><span class="value" id="totalStaff">৳ 0.00</span></div>
+    <div class="summary-row"><span>Total Cost</span><span class="value" id="totalCost">৳ 0.00</span></div>
+    <div class="summary-row total"><span>Profit / Loss</span><span class="value" id="profitLoss">৳ 0.00</span></div>
+  </div>
+</div>
+
+<div id="monthlyTab" class="hidden">
+  <div class="date-box">
+    <label>Month:</label>
+    <input type="number" id="monthYear" style="width:80px;">
+    <input type="number" id="monthNum" style="width:70px;">
+    <button onclick="loadMonthly()">Show</button>
+  </div>
+  <div class="summary">
+    <h2>📅 Monthly Summary</h2>
+    <div class="summary-row"><span>Days Worked</span><span class="value" id="mDays">0</span></div>
+    <div class="summary-row"><span>Total Sales</span><span class="value" id="mSales">৳ 0.00</span></div>
+    <div class="summary-row"><span>Total Bazar</span><span class="value" id="mBazar">৳ 0.00</span></div>
+    <div class="summary-row"><span>Total Staff</span><span class="value" id="mStaff">৳ 0.00</span></div>
+    <div class="summary-row"><span>Total Cost</span><span class="value" id="mCost">৳ 0.00</span></div>
+    <div class="summary-row total"><span>Profit / Loss</span><span class="value" id="mProfit">৳ 0.00</span></div>
+  </div>
+</div>
+
+<div id="historyTab" class="hidden">
+  <div class="card">
+    <h2>📅 All Days History</h2>
+    <div id="historyList"><p style="color:#666;">Loading...</p></div>
+  </div>
+</div>
+
+<footer><span>ZAYAN</span> Kitchen | Cafe &amp; Grill — Powered by MongoDB</footer>
+
+<script>
+  const API = '/api';
+  let currentDay = { date: '', bazar: [], staff: [], sales: [] };
+
+  const dateInput = document.getElementById('dateInput');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.value = today;
+
+  const now = new Date();
+  document.getElementById('monthYear').value = now.getFullYear();
+  document.getElementById('monthNum').value = now.getMonth() + 1;
+
+  function switchTab(tab, e) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('dailyTab').classList.add('hidden');
+    document.getElementById('monthlyTab').classList.add('hidden');
+    document.getElementById('historyTab').classList.add('hidden');
+    document.getElementById(tab + 'Tab').classList.remove('hidden');
+    if (tab === 'history') loadHistory();
+  }
+
+  function fmt(n) { return Number(n).toFixed(2); }
+
+  async function loadDay() {
+    const date = dateInput.value;
+    const res = await fetch(`${API}/day/${date}`);
+    currentDay = await res.json();
+    currentDay.date = date;
+    if (!currentDay.bazar) currentDay.bazar = [];
+    if (!currentDay.staff) currentDay.staff = [];
+    if (!currentDay.sales) currentDay.sales = [];
+    renderAll();
+  }
+
+  async function saveDay() {
+    await fetch(`${API}/day/${currentDay.date}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bazar: currentDay.bazar,
+        staff: currentDay.staff,
+        sales: currentDay.sales
+      })
+    });
+  }
+
+  async function addBazar() {
+    const name = document.getElementById('bazarName').value.trim();
+    const price = Number(document.getElementById('bazarPrice').value);
+    if (!name || !price || price <= 0) return alert('Enter valid item and price');
+    currentDay.bazar.push({ name, price });
+    document.getElementById('bazarName').value = '';
+    document.getElementById('bazarPrice').value = '';
+    await saveDay(); renderAll();
+  }
+
+  async function addStaff() {
+    const name = document.getElementById('staffName').value.trim();
+    const salary = Number(document.getElementById('staffSalary').value);
+    if (!name || !salary || salary <= 0) return alert('Enter valid name and salary');
+    currentDay.staff.push({ name, salary });
+    document.getElementById('staffName').value = '';
+    document.getElementById('staffSalary').value = '';
+    await saveDay(); renderAll();
+  }
+
+  async function addSales() {
+    const amount = Number(document.getElementById('salesAmount').value);
+    if (!amount || amount <= 0) return alert('Enter valid sales amount');
+    currentDay.sales.push({ amount });
+    document.getElementById('salesAmount').value = '';
+    await saveDay(); renderAll();
+  }
+
+  async function delBazar(i) { currentDay.bazar.splice(i,1); await saveDay(); renderAll(); }
+  async function delStaff(i) { currentDay.staff.splice(i,1); await saveDay(); renderAll(); }
+  async function delSales(i) { currentDay.sales.splice(i,1); await saveDay(); renderAll(); }
+
+  function renderAll() {
+    const bl = document.getElementById('bazarList'); bl.innerHTML = '';
+    currentDay.bazar.forEach((it, i) => {
+      bl.innerHTML += `<li><span>${it.name}</span><span><span class="item-price">৳ ${fmt(it.price)}</span> <button class="delete" onclick="delBazar(${i})">X</button></span></li>`;
+    });
+    const sl = document.getElementById('staffList'); sl.innerHTML = '';
+    currentDay.staff.forEach((it, i) => {
+      sl.innerHTML += `<li><span>${it.name}</span><span><span class="item-price">৳ ${fmt(it.salary)}</span> <button class="delete" onclick="delStaff(${i})">X</button></span></li>`;
+    });
+    const sal = document.getElementById('salesList'); sal.innerHTML = '';
+    currentDay.sales.forEach((it, i) => {
+      sal.innerHTML += `<li><span>Sale Entry</span><span><span class="item-price">৳ ${fmt(it.amount)}</span> <button class="delete" onclick="delSales(${i})">X</button></span></li>`;
+    });
+
+    const tb = currentDay.bazar.reduce((s,x) => s + Number(x.price), 0);
+    const ts = currentDay.staff.reduce((s,x) => s + Number(x.salary), 0);
+    const tsa = currentDay.sales.reduce((s,x) => s + Number(x.amount), 0);
+    const tc = tb + ts;
+    const p = tsa - tc;
+
+    document.getElementById('totalSales').textContent = '৳ ' + fmt(tsa);
+    document.getElementById('totalBazar').textContent = '৳ ' + fmt(tb);
+    document.getElementById('totalStaff').textContent = '৳ ' + fmt(ts);
+    document.getElementById('totalCost').textContent = '৳ ' + fmt(tc);
+    const plEl = document.getElementById('profitLoss');
+    plEl.textContent = (p >= 0 ? '৳ ' + fmt(p) : '-৳ ' + fmt(Math.abs(p)));
+    plEl.className = 'value ' + (p >= 0 ? 'profit' : 'loss');
+  }
+
+  async function loadMonthly() {
+    const y = document.getElementById('monthYear').value;
+    const m = document.getElementById('monthNum').value;
+    if (!y || !m) return alert('Enter year and month');
+    const res = await fetch(`${API}/monthly/${y}/${m}`);
+    const d = await res.json();
+
+    document.getElementById('mDays').textContent = d.daysCount;
+    document.getElementById('mSales').textContent = '৳ ' + fmt(d.totalSales);
+    document.getElementById('mBazar').textContent = '৳ ' + fmt(d.totalBazar);
+    document.getElementById('mStaff').textContent = '৳ ' + fmt(d.totalStaff);
+    document.getElementById('mCost').textContent = '৳ ' + fmt(d.totalCost);
+    const pEl = document.getElementById('mProfit');
+    pEl.textContent = (d.profit >= 0 ? '৳ ' + fmt(d.profit) : '-৳ ' + fmt(Math.abs(d.profit)));
+    pEl.className = 'value ' + (d.profit >= 0 ? 'profit' : 'loss');
+  }
+
+  async function loadHistory() {
+    const res = await fetch(`${API}/history`);
+    const days = await res.json();
+    const h = document.getElementById('historyList');
+    if (days.length === 0) { h.innerHTML = '<p style="color:#666;">No data yet.</p>'; return; }
+    h.innerHTML = '';
+    days.forEach(d => {
+      const tb = (d.bazar||[]).reduce((s,x)=>s+Number(x.price),0);
+      const ts = (d.staff||[]).reduce((s,x)=>s+Number(x.salary),0);
+      const tsa = (d.sales||[]).reduce((s,x)=>s+Number(x.amount),0);
+      const p = tsa - (tb + ts);
+      h.innerHTML += `<div class="history-item">
+        <div class="h-date">${d.date}</div>
+        <div>Sales: <b>৳ ${fmt(tsa)}</b></div>
+        <div>Bazar: <b>৳ ${fmt(tb)}</b> | Staff: <b>৳ ${fmt(ts)}</b></div>
+        <div>Profit/Loss: <b class="${p>=0?'profit':'loss'}">৳ ${fmt(p)}</b></div>
+      </div>`;
+    });
+  }
+
+  loadDay();
+</script>
+
+</body>
+</html>

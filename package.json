@@ -1,0 +1,20 @@
+{
+  "name": "zayan-resturant-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "ZAYAN Kitchen | Cafe & Grill - Daily & Monthly Hisab Tracker",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "mongodb": "^6.8.0",
+    "mongoose": "8.6.3"
+  }
+}
