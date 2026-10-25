@@ -11,7 +11,8 @@ const port = process.env.PORT || 5000;
 // ================== MIDDLEWARE ==================
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+// ✅ public ফোল্ডার প্রজেক্ট রুটে, api ফোল্ডারের এক ধাপ উপরে
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 // ================== MONGODB CLIENT (Global Cache for Vercel) ==================
 let client;
@@ -30,7 +31,6 @@ if (!global._mongoClient) {
 }
 client = global._mongoClient;
 
-// ডাটাবেস রেফারেন্স
 const dbName = "zayan_db";
 function getDb() {
   return client.db(dbName);
@@ -125,12 +125,13 @@ app.delete("/api/day/:date", async (req, res) => {
 });
 
 // ================== FRONTEND ==================
+// ✅ public ফোল্ডারের পাথ ঠিক করা হয়েছে
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
 // ================== SERVER START ==================
-// লোকাল ডেভেলপমেন্টের জন্য listen, Vercel-এ listen করবে না
+// লোকাল ডেভেলপমেন্টে listen, Vercel-এ listen করবে না
 if (process.env.NODE_ENV !== "production") {
   (async () => {
     try {
@@ -143,12 +144,7 @@ if (process.env.NODE_ENV !== "production") {
       console.error("❌ MongoDB connection error:", err.message);
     }
   })();
-} else {
-  // Vercel-এর জন্য শুধু কানেক্ট করার চেষ্টা (background)
-  client.connect().catch((err) => {
-    console.error("❌ MongoDB connection error:", err.message);
-  });
 }
 
-// Vercel-এর জন্য app এক্সপোর্ট
+// Vercel-এর জন্য app এক্সপোর্ট (এটি অবশ্যই থাকতে হবে)
 module.exports = app;
