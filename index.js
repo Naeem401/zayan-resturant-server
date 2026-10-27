@@ -1,4 +1,7 @@
 // ================== ZAYAN RESTAURANT SERVER (Vercel Ready) ==================
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -11,7 +14,8 @@ const port = process.env.PORT || 5000;
 // ================== MIDDLEWARE ==================
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", "public")));
+// ✅ index.js রুট ডিরেক্টরিতে, তাই public ফোল্ডার একই স্তরে
+app.use(express.static(path.join(__dirname, "public")));
 
 // ================== MONGODB CLIENT (Cached for Vercel Serverless) ==================
 let cachedClient = null;
@@ -132,8 +136,9 @@ app.delete("/api/day/:date", async (req, res) => {
 });
 
 // ================== FRONTEND ==================
+// ✅ public ফোল্ডারের পাথ ঠিক করা হয়েছে
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // ================== SERVER START (লোকাল ডেভেলপমেন্টের জন্য) ==================
